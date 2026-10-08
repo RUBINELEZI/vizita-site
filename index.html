@@ -395,7 +395,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 /* Form endpoint for the waitlist.
    GitHub Pages / Vercel: paste a Formspree URL, e.g. "https://formspree.io/f/abcdwxyz".
    Netlify: set it to "netlify" to use Netlify Forms. Empty = not connected yet. */
-window.SITE_CONFIG = { formEndpoint: "" };
+window.SITE_CONFIG = { formEndpoint: "https://formspree.io/f/mdeagerd" };
 
 (function(){
   // ---------- waitlist forms ----------
@@ -407,6 +407,7 @@ window.SITE_CONFIG = { formEndpoint: "" };
       var btn = form.querySelector("button[type=submit]");
       var data = new FormData(form);
       if (data.get("company_url")) return;
+      data.delete("company_url"); data.append("_subject", "New Vizita sign-up (" + data.get("form-name") + ")");
       btn.disabled = true; status.className = status.className.replace(/\b(ok|err)\b/g,"").trim();
       status.textContent = "Sending...";
       var ep = window.SITE_CONFIG.formEndpoint;

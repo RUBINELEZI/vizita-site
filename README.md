@@ -6,7 +6,7 @@ One static page (`index.html`, no build step) with a live WhatsApp booking demo 
 
 **GitHub Pages (current)**
 1. Repo Settings → Pages → Source: "Deploy from a branch", branch `main`, folder `/ (root)`. Every push to `main` then updates the site.
-2. Create a free form at formspree.io and paste its URL into `window.SITE_CONFIG.formEndpoint` near the bottom of `index.html`. Until then the forms say sign-ups open soon.
+2. Forms post to Formspree (`https://formspree.io/f/mdeagerd`, set in `window.SITE_CONFIG.formEndpoint` near the bottom of `index.html`). Sign-ups arrive by email and in the Formspree dashboard.
 3. Custom domain: add a `CNAME` file containing `vizita.ai` and point the domain's DNS to GitHub Pages.
 
 
