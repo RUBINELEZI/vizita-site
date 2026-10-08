@@ -137,13 +137,45 @@ section{padding-block:clamp(56px,8vw,104px)}
 .compare ul{margin:0;padding-left:1.1em;color:var(--muted);display:grid;gap:6px}
 @media (max-width:720px){.compare{grid-template-columns:1fr}}
 
-.steps{list-style:none;margin:0;padding:0;display:grid;gap:0;counter-reset:s}
-.steps li{display:grid;grid-template-columns:72px minmax(0,1fr) minmax(0,1.1fr);gap:24px;padding-block:26px;border-top:1px solid var(--line);align-items:baseline}
-.steps li:last-child{border-bottom:1px solid var(--line)}
-.steps .n{font:500 .85rem var(--f-mono);color:var(--muted)}
-.steps p{color:var(--muted)}
-.steps code{font:400 .82rem var(--f-mono);background:var(--sea-soft);padding:2px 6px;border-radius:6px;color:var(--ink)}
-@media (max-width:760px){.steps li{grid-template-columns:44px minmax(0,1fr);gap:8px 16px}.steps li p{grid-column:2}}
+/* how it works: visual flow */
+.flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px;position:relative}
+.flow::before{content:"";position:absolute;left:22px;right:calc((100% - 72px)/5 - 22px);top:22px;border-top:2px dashed color-mix(in srgb,var(--sea) 35%, transparent);z-index:0}
+.flow li{position:relative;z-index:1;display:grid;grid-template-rows:auto auto 1fr;gap:14px;min-width:0}
+.badge{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--bg);border:2px solid var(--sea);color:var(--sea);font:600 1rem var(--f-mono);transition:background .3s ease,color .3s ease,transform .3s ease}
+.flow li.on .badge{background:var(--sun);border-color:var(--sun);color:#2a1a02;transform:scale(1.08)}
+.vig{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;height:180px;display:flex;flex-direction:column;justify-content:center;gap:8px;overflow:hidden;font-size:.8rem;box-shadow:0 14px 30px -24px rgba(15,53,80,.5);transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+.flow li.on .vig{transform:translateY(-4px);border-color:var(--sun);box-shadow:0 22px 40px -24px rgba(15,53,80,.6)}
+.flow h3{font-size:1.15rem}
+.flow p{color:var(--muted);font-size:.95rem;line-height:1.5}
+.flow .tag{font:500 .72rem/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--sun-ink)}
+/* vignette parts */
+.sheet{display:grid;gap:4px;font-family:var(--f-mono);font-size:.72rem}
+.sheet div{display:grid;grid-template-columns:1fr auto;gap:6px;padding:5px 7px;border-radius:6px;background:var(--sea-soft)}
+.sheet div.hl{background:color-mix(in srgb,var(--sun) 30%, var(--surface));font-weight:500}
+.sheet em{font-style:normal;color:var(--muted)}
+.b{max-width:92%;padding:6px 9px;border-radius:10px;line-height:1.35;box-shadow:0 1px 0 rgba(0,0,0,.06)}
+.b.o{align-self:flex-end;background:var(--bubble-out);border-top-right-radius:3px}
+.b.i{align-self:flex-start;background:var(--chat-bg);border-top-left-radius:3px}
+.vig.chatv{background:var(--surface)}
+.pill{align-self:flex-start;font:500 .7rem/1 var(--f-mono);padding:6px 9px;border-radius:999px;background:var(--sea);color:var(--bg)}
+.pill.sun{background:var(--sun);color:#2a1a02}
+.pill.ok{background:color-mix(in srgb,var(--ok) 18%, var(--surface));color:var(--ok)}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;font:400 .66rem var(--f-mono);text-align:center;color:var(--muted)}
+.cal span{padding:5px 0;border-radius:5px;background:var(--sea-soft)}
+.cal span.x{opacity:.35}
+.cal span.pick{background:var(--sun);color:#2a1a02;font-weight:500}
+.who-row{display:flex;align-items:center;gap:8px;font-weight:600}
+.av{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--sea);color:var(--bg);font:600 .72rem var(--f-body);flex:none}
+.card-mini{border:1px solid var(--line);border-radius:10px;padding:8px 10px;display:grid;gap:3px}
+.card-mini small{color:var(--muted)}
+@media (max-width:1020px){
+  .flow{grid-template-columns:1fr;gap:28px;max-width:560px}
+  .flow::before{left:21px;right:auto;top:22px;bottom:22px;border-top:0;border-left:2px dashed color-mix(in srgb,var(--sea) 35%, transparent)}
+  .flow li{grid-template-columns:44px minmax(0,1fr);grid-template-rows:auto;gap:8px 18px}
+  .flow li > .vig{grid-column:2;grid-row:2;height:auto;min-height:120px}
+  .flow li > .txt{grid-column:2;grid-row:1}
+}
+@media (prefers-reduced-motion:reduce){.badge,.vig{transition:none}}
 
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px 32px}
 .feat{display:grid;gap:8px;align-content:start;padding-top:18px;border-top:2px solid var(--ink)}
@@ -274,14 +306,56 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">How it works</span>
-      <h2>From a spreadsheet row to a call on your consultant's calendar.</h2>
+      <h2>From a spreadsheet to a booked call, in five steps.</h2>
     </div>
-    <ol class="steps">
-      <li><span class="n">01</span><h3>Import your lead sheet</h3><p>Upload the spreadsheet or connect the Google Sheet. Phone numbers are cleaned, duplicates removed, warm leads go first.</p></li>
-      <li><span class="n">02</span><h3>The first message goes out</h3><p>A short, friendly message in the lead's language from your clinic's WhatsApp Business number, with one easy question.</p></li>
-      <li><span class="n">03</span><h3>It answers, one question at a time</h3><p>Trips, timing, price ranges, warranty. Only from answers your team approved. Anything medical or a final quote goes to a person.</p></li>
-      <li><span class="n">04</span><h3>The right consultant's calendar</h3><p>When the lead replies, a consultant who speaks their language is assigned. The lead gets that consultant's booking link, pre-filled.</p></li>
-      <li><span class="n">05</span><h3>Booked, then handed over</h3><p>The patient gets their consultant's contact card. The consultant gets a briefing: who, from where, what they asked, any x-rays sent. The assistant's job is done.</p></li>
+    <ol class="flow" id="flow">
+      <li>
+        <span class="badge">1</span>
+        <div class="vig" aria-hidden="true">
+          <div class="sheet">
+            <div class="hl"><span>Giulia R. · +39</span><em>warm</em></div>
+            <div><span>Sarah T. · +44</span><em>warm</em></div>
+            <div><span>Petra K. · +49</span><em>cold</em></div>
+            <div><span>Arben D. · +39</span><em>warm</em></div>
+          </div>
+          <span class="pill">1,000 leads imported</span>
+        </div>
+        <div class="txt"><span class="tag">Your sheet</span><h3>Upload your leads</h3><p>Drop in the spreadsheet you already have. We clean the numbers and start with the warmest leads.</p></div>
+      </li>
+      <li>
+        <span class="badge">2</span>
+        <div class="vig chatv" aria-hidden="true">
+          <div class="b o">Ciao Giulia 👋 sono Elira della clinica. Ci stai ancora pensando?</div>
+          <span class="pill sun">Sent in under 1 min</span>
+        </div>
+        <div class="txt"><span class="tag">WhatsApp</span><h3>Every lead gets a hello</h3><p>A short, friendly message in their own language, from your clinic's WhatsApp number.</p></div>
+      </li>
+      <li>
+        <span class="badge">3</span>
+        <div class="vig chatv" aria-hidden="true">
+          <div class="b i">How many trips do I need?</div>
+          <div class="b o">Usually two, 3 to 6 months apart 😊</div>
+          <span class="pill">Medical? → Marco</span>
+        </div>
+        <div class="txt"><span class="tag">Chat</span><h3>It answers questions</h3><p>Only with answers your team approved. Anything medical goes straight to a real person.</p></div>
+      </li>
+      <li>
+        <span class="badge">4</span>
+        <div class="vig" aria-hidden="true">
+          <div class="who-row"><span class="av">M</span>Marco's calendar</div>
+          <div class="cal"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span class="x">10:00</span><span>11:30</span><span class="x">15:00</span><span class="pick">18:30</span><span>17:00</span></div>
+          <span class="pill ok">✓ Booked · Thu 18:30</span>
+        </div>
+        <div class="txt"><span class="tag">Booking</span><h3>A call gets booked</h3><p>The lead picks a time with a consultant who speaks their language.</p></div>
+      </li>
+      <li>
+        <span class="badge">5</span>
+        <div class="vig" aria-hidden="true">
+          <div class="card-mini"><div class="who-row"><span class="av">M</span>Marco</div><small>Your patient consultant · +355 ...</small></div>
+          <div class="card-mini"><b>Briefing ready</b><small>Giulia · Italy · implants · sent x-ray</small></div>
+        </div>
+        <div class="txt"><span class="tag">Handover</span><h3>Your consultant takes over</h3><p>The patient gets Marco's number. Marco gets a short briefing before the call.</p></div>
+      </li>
     </ol>
   </div>
 </section>
@@ -489,6 +563,13 @@ window.SITE_CONFIG = { formEndpoint: "https://formspree.io/f/mdeagerd" };
   // Render the finished Italian conversation first so the page is complete at rest, then animate.
   S.it.msgs.forEach(function(m){ chat.appendChild(el(m)); }); note.classList.remove("dim");
   if (!reduce) setTimeout(function(){ play("it"); }, 2200);
+  // ---------- how-it-works highlight ----------
+  var flow = document.getElementById("flow");
+  if (flow){
+    var items = flow.querySelectorAll("li"), cur = 0;
+    items[0].classList.add("on");
+    if (!reduce) setInterval(function(){ items[cur].classList.remove("on"); cur = (cur+1) % items.length; items[cur].classList.add("on"); }, 2200);
+  }
 })();
 </script>
 </body>
