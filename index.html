@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vizita | WhatsApp booking assistant for clinics</title>
+<meta name="description" content="Vizita messages every lead on WhatsApp in their language, chats until they book a video call with the right consultant, then hands them over. Built for dental and medical tourism clinics.">
+<meta property="og:title" content="Vizita: every lead messaged, every consultant's calendar full">
+<meta property="og:description" content="A WhatsApp assistant for dental and medical tourism clinics that turns your lead sheet into booked video calls.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0f3550">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230f3550'/%3E%3Cpath d='M9 11h14v9a3 3 0 0 1-3 3h-6l-5 4v-4a3 3 0 0 1 0 0z' fill='%23f2a93b'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: split hero (thesis left, live WhatsApp booking right), then a calm single column of
+   sections; one deep Adriatic band for pricing is the only loud block. */
+:root{
+  --bg:#f5f8fa;          /* porcelain, cool */
+  --surface:#ffffff;
+  --ink:#0f2433;
+  --muted:#4d6273;
+  --line:#d9e2e8;
+  --sea:#0f3550;         /* Adriatic */
+  --sea-soft:#e3edf3;
+  --sun:#f2a93b;         /* marigold accent */
+  --sun-ink:#7a4a05;
+  --chat-bg:#e9eef1;
+  --bubble-in:#ffffff;
+  --bubble-out:#dff3e4;
+  --ok:#1f8a52;
+  --band-bg:#0f3550;
+  --band-fg:#eaf2f7;
+  --band-muted:#a9c2d3;
+  --f-display:"Young Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1a24; --surface:#112532; --ink:#e7eff4; --muted:#9db2c1; --line:#21394a;
+    --sea:#8cc3e6; --sea-soft:#14303f; --sun:#f5b65a; --sun-ink:#f5b65a;
+    --chat-bg:#0e1f2a; --bubble-in:#1a3242; --bubble-out:#1d4a36; --ok:#5fd394;
+    --band-bg:#071219; --band-fg:#e7eff4; --band-muted:#8ea7b8; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1a24; --surface:#112532; --ink:#e7eff4; --muted:#9db2c1; --line:#21394a;
+  --sea:#8cc3e6; --sea-soft:#14303f; --sun:#f5b65a; --sun-ink:#f5b65a;
+  --chat-bg:#0e1f2a; --bubble-in:#1a3242; --bubble-out:#1d4a36; --ok:#5fd394;
+  --band-bg:#071219; --band-fg:#e7eff4; --band-muted:#8ea7b8; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1140px;margin:0 auto;padding-inline:clamp(16px,4vw,32px)}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;line-height:1.08;text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(2.4rem,5.6vw,4.2rem)}
+h2{font-size:clamp(1.9rem,3.6vw,2.8rem)}
+h3{font-size:1.25rem;line-height:1.25}
+p{margin:0}
+.eyebrow{font:500 .78rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lede{font-size:1.2rem;color:var(--muted);max-width:34em}
+.mark{background:linear-gradient(transparent 62%, color-mix(in srgb,var(--sun) 55%, transparent) 62%);padding-inline:.06em}
+
+/* nav */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--bg) 88%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
+.logo{display:flex;align-items:center;gap:10px;font:400 1.35rem/1 var(--f-display);text-decoration:none}
+.logo svg{flex:none}
+.top nav{display:flex;align-items:center;gap:22px;font-weight:500;font-size:.95rem}
+.top nav a{text-decoration:none;color:var(--muted)}
+.top nav a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:12px 20px;font:600 1rem/1 var(--f-body);cursor:pointer;text-decoration:none;transition:transform .15s ease, background .15s ease}
+.btn-primary{background:var(--sun);color:#2a1a02}
+.btn-primary:hover{transform:translateY(-1px)}
+.top nav .btn{color:#2a1a02;padding:10px 16px}
+@media (max-width:720px){.top nav a:not(.btn){display:none}}
+
+/* hero */
+.hero{padding-block:clamp(40px,7vw,88px) clamp(48px,7vw,96px)}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,5vw,72px);align-items:center}
+.hero-copy{display:grid;gap:24px;min-width:0}
+.hero-form{display:flex;flex-wrap:wrap;gap:10px;max-width:480px}
+.hero-form input{flex:1 1 220px;min-width:0}
+.fine{font-size:.88rem;color:var(--muted)}
+input,select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:12px 18px}
+select{border-radius:12px}
+input:focus,select:focus{outline:none;border-color:var(--sea);box-shadow:0 0 0 3px var(--sea-soft)}
+@media (max-width:900px){.hero .wrap{grid-template-columns:1fr}}
+
+/* phone */
+.stage{display:grid;justify-items:center;gap:14px;min-width:0}
+.langs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.langs button{font:500 .8rem/1 var(--f-mono);letter-spacing:.04em;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:8px 12px;cursor:pointer}
+.langs button[aria-pressed="true"]{background:var(--sea);border-color:var(--sea);color:var(--bg)}
+.phone{width:min(360px,100%);border-radius:34px;background:var(--surface);border:1px solid var(--line);box-shadow:0 30px 60px -30px rgba(15,53,80,.35);overflow:hidden}
+.phone-head{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--sea);color:#eaf2f7}
+:root[data-theme="dark"] .phone-head{color:#0b1a24}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .phone-head{color:#0b1a24}}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--sun);display:grid;place-items:center;font:600 .95rem var(--f-body);color:#2a1a02;flex:none}
+.phone-head b{display:block;font-weight:600;font-size:.98rem;line-height:1.2}
+.phone-head small{font-size:.78rem;opacity:.8}
+.chat{background:var(--chat-bg);height:440px;padding:14px 12px;display:flex;flex-direction:column;gap:8px;overflow:hidden;justify-content:flex-end}
+.msg{max-width:84%;padding:8px 11px 6px;border-radius:12px;font-size:.92rem;line-height:1.4;box-shadow:0 1px 0 rgba(0,0,0,.06);animation:pop .35s ease both}
+.msg time{display:block;text-align:right;font:400 .68rem var(--f-mono);color:var(--muted);margin-top:2px}
+.msg.out{align-self:flex-end;background:var(--bubble-out);border-top-right-radius:4px}
+.msg.in{align-self:flex-start;background:var(--bubble-in);border-top-left-radius:4px}
+.slot{margin-top:6px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 10px;display:grid;gap:2px}
+.slot strong{font-weight:600;font-size:.88rem}
+.slot span{font:400 .75rem var(--f-mono);color:var(--muted)}
+.booked{align-self:center;font:500 .74rem/1 var(--f-mono);letter-spacing:.04em;background:var(--surface);color:var(--ok);border:1px solid var(--line);border-radius:999px;padding:7px 12px;animation:pop .35s ease both}
+.typing{align-self:flex-start;background:var(--bubble-in);border-radius:12px;padding:10px 12px;display:flex;gap:4px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+.note{width:min(360px,100%);display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:.86rem;transition:opacity .4s ease, transform .4s ease}
+.note.dim{opacity:.35;transform:translateY(4px)}
+.note .dot{width:10px;height:10px;border-radius:50%;background:var(--sun);margin-top:6px;flex:none}
+.note b{font-weight:600}
+.note p{color:var(--muted)}
+@keyframes pop{from{opacity:.0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.msg,.booked{animation:none}.typing i{animation:none}html{scroll-behavior:auto}}
+
+/* sections */
+section{padding-block:clamp(56px,8vw,104px)}
+.sec-head{display:grid;gap:14px;max-width:720px;margin-bottom:clamp(32px,5vw,56px)}
+.problem{border-top:1px solid var(--line)}
+.compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.compare > div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:clamp(20px,3vw,32px);display:grid;gap:14px;align-content:start}
+.compare .num{font:400 clamp(2.4rem,5vw,3.4rem)/1 var(--f-display);font-variant-numeric:tabular-nums}
+.compare .after .num{color:var(--sun-ink)}
+.compare ul{margin:0;padding-left:1.1em;color:var(--muted);display:grid;gap:6px}
+@media (max-width:720px){.compare{grid-template-columns:1fr}}
+
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:0;counter-reset:s}
+.steps li{display:grid;grid-template-columns:72px minmax(0,1fr) minmax(0,1.1fr);gap:24px;padding-block:26px;border-top:1px solid var(--line);align-items:baseline}
+.steps li:last-child{border-bottom:1px solid var(--line)}
+.steps .n{font:500 .85rem var(--f-mono);color:var(--muted)}
+.steps p{color:var(--muted)}
+.steps code{font:400 .82rem var(--f-mono);background:var(--sea-soft);padding:2px 6px;border-radius:6px;color:var(--ink)}
+@media (max-width:760px){.steps li{grid-template-columns:44px minmax(0,1fr);gap:8px 16px}.steps li p{grid-column:2}}
+
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px 32px}
+.feat{display:grid;gap:8px;align-content:start;padding-top:18px;border-top:2px solid var(--ink)}
+.feat p{color:var(--muted)}
+@media (max-width:900px){.grid3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.grid3{grid-template-columns:1fr}}
+
+.band{background:var(--band-bg);color:var(--band-fg)}
+.band .eyebrow,.band .lede{color:var(--band-muted)}
+.price{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(28px,5vw,64px);align-items:start}
+.terms{list-style:none;margin:0;padding:0;display:grid}
+.terms li{display:flex;justify-content:space-between;gap:16px;padding-block:16px;border-bottom:1px solid color-mix(in srgb,var(--band-fg) 18%, transparent)}
+.terms li span:last-child{font-family:var(--f-mono);font-size:.9rem;color:var(--sun);text-align:right}
+.quote{font:400 clamp(1.4rem,2.6vw,1.9rem)/1.3 var(--f-display);border-left:3px solid var(--sun);padding-left:20px}
+@media (max-width:820px){.price{grid-template-columns:1fr}}
+
+.who{display:flex;flex-wrap:wrap;gap:10px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-size:.95rem}
+.chip.first{background:var(--sea);border-color:var(--sea);color:var(--bg)}
+
+.faq{display:grid;gap:0;max-width:820px}
+.faq details{border-top:1px solid var(--line);padding-block:18px}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{cursor:pointer;font-weight:600;font-size:1.08rem;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::after{content:"+";font-family:var(--f-mono);color:var(--muted)}
+.faq details[open] summary::after{content:"–"}
+.faq details p{margin-top:10px;color:var(--muted);max-width:62ch}
+
+.join{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(28px,5vw,64px);align-items:start}
+.form{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:clamp(20px,3vw,32px);display:grid;gap:14px}
+.form .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form label{display:grid;gap:6px;font-size:.88rem;font-weight:600}
+.form input,.form select{border-radius:12px;width:100%}
+.form .btn{justify-self:start}
+.status{font-size:.95rem;min-height:1.4em}
+.status.ok{color:var(--ok)}
+.status.err{color:#c0392b}
+@media (max-width:820px){.join{grid-template-columns:1fr}}
+@media (max-width:520px){.form .row{grid-template-columns:1fr}}
+
+footer{border-top:1px solid var(--line);padding-block:32px;color:var(--muted);font-size:.9rem}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+.hp{position:absolute;left:-9999px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#" aria-label="Vizita home">
+      <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--sea)"/><path d="M8 10.5h16v9.5a3 3 0 0 1-3 3h-7l-6 4.5z" fill="var(--sun)"/><path d="M12.5 16.2l2.4 2.4 4.6-4.8" stroke="var(--sea)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Vizita</span>
+    </a>
+    <nav aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn btn-primary" href="#join">Join the pilot</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-copy">
+      <span class="eyebrow">WhatsApp booking assistant for dental tourism clinics</span>
+      <h1>Every lead messaged. Every consultant's calendar <span class="mark">full</span>.</h1>
+      <p class="lede">Vizita writes to every lead in your sheet on WhatsApp, in their language, within a minute. It answers their first questions, books a video call with the right consultant, then hands the patient over. Your team spends the day on calls, not on first messages.</p>
+      <form class="hero-form" data-waitlist name="waitlist-hero" method="POST" data-netlify="true" netlify-honeypot="company_url">
+        <input type="hidden" name="form-name" value="waitlist-hero">
+        <input class="hp" name="company_url" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <label class="hp" for="hero-email">Work email</label>
+        <input id="hero-email" type="email" name="email" placeholder="you@clinic.com" required autocomplete="email">
+        <button class="btn btn-primary" type="submit">Request early access</button>
+        <p class="status fine" role="status" aria-live="polite"></p>
+      </form>
+      <p class="fine">Taking on 5 founding clinics. No setup fee, no per-seat pricing.</p>
+    </div>
+
+    <div class="stage" aria-label="Example conversation">
+      <div class="langs" role="group" aria-label="Conversation language">
+        <button type="button" data-lang="it" aria-pressed="true">IT</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        <button type="button" data-lang="de" aria-pressed="false">DE</button>
+        <button type="button" data-lang="sq" aria-pressed="false">SQ</button>
+      </div>
+      <div class="phone">
+        <div class="phone-head">
+          <div class="avatar">E</div>
+          <div><b>Elira · Patient team</b><small id="phone-sub">online</small></div>
+        </div>
+        <div class="chat" id="chat" aria-live="off"></div>
+      </div>
+      <div class="note dim" id="rep-note">
+        <span class="dot" aria-hidden="true"></span>
+        <div><b>Marco's phone</b><p id="rep-note-text">New booked call: Giulia R. · Italy · implants · Thu 18:30. Briefing card ready.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="problem">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">The problem</span>
+      <h2>Your lead sheet is bigger than your team's day.</h2>
+      <p class="lede">A rep can write to a handful of new leads a day. The rest wait in a spreadsheet and go cold, often while a clinic in Turkey has already replied.</p>
+    </div>
+    <div class="compare">
+      <div>
+        <span class="eyebrow">Today, by hand</span>
+        <span class="num">45 / day</span>
+        <p>15 reps, about 3 new leads each, typed one by one from personal phones.</p>
+        <ul><li>Hours or days before a lead hears back</li><li>No record of who owns which patient</li><li>Follow-ups depend on memory</li></ul>
+      </div>
+      <div class="after">
+        <span class="eyebrow">With Vizita</span>
+        <span class="num">Every lead</span>
+        <p>Each new row gets a first message in minutes, and the reps only see people who replied.</p>
+        <ul><li>First message in Italian, English, German or Albanian</li><li>Each patient belongs to one consultant, for good</li><li>Polite follow-ups at +1, +3, +7 and +14 days, then it stops</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">How it works</span>
+      <h2>From a spreadsheet row to a call on your consultant's calendar.</h2>
+    </div>
+    <ol class="steps">
+      <li><span class="n">01</span><h3>Import your lead sheet</h3><p>Upload the spreadsheet or connect the Google Sheet. Phone numbers are cleaned, duplicates removed, warm leads go first.</p></li>
+      <li><span class="n">02</span><h3>The first message goes out</h3><p>A short, friendly message in the lead's language from your clinic's WhatsApp Business number, with one easy question.</p></li>
+      <li><span class="n">03</span><h3>It answers, one question at a time</h3><p>Trips, timing, price ranges, warranty. Only from answers your team approved. Anything medical or a final quote goes to a person.</p></li>
+      <li><span class="n">04</span><h3>The right consultant's calendar</h3><p>When the lead replies, a consultant who speaks their language is assigned. The lead gets that consultant's booking link, pre-filled.</p></li>
+      <li><span class="n">05</span><h3>Booked, then handed over</h3><p>The patient gets their consultant's contact card. The consultant gets a briefing: who, from where, what they asked, any x-rays sent. The assistant's job is done.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Built for real sales teams</span>
+      <h2>Your consultants stay in charge.</h2>
+    </div>
+    <div class="grid3">
+      <div class="feat"><h3>Humans can always step in</h3><p>When a consultant types in a chat, the assistant goes silent on that lead until someone hands it back. No talking over your team.</p></div>
+      <div class="feat"><h3>Alerts when it matters</h3><p>Medical questions, price negotiation, a request for a person: the right consultant gets a WhatsApp alert with a link to the chat.</p></div>
+      <div class="feat"><h3>A CRM your reps will use</h3><p>One list of leads, one chat per patient, a "my patients" view on the phone, and two-click call outcomes.</p></div>
+      <div class="feat"><h3>Respects the patient</h3><p>Quiet hours in the lead's time zone, a stop on the first "no", and no more messages after the last follow-up.</p></div>
+      <div class="feat"><h3>Official WhatsApp only</h3><p>Runs on Meta's WhatsApp Business Platform with your own number. No grey-market tools that get numbers banned.</p></div>
+      <div class="feat"><h3>Results you can count</h3><p>Replied, booked, showed up, deposit paid. Per consultant, per country, per week, in one dashboard you both trust.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="pricing">
+  <div class="wrap price">
+    <div class="sec-head" style="margin-bottom:0">
+      <span class="eyebrow">Pricing</span>
+      <h2>You don't pay per rep. You pay when a patient is on a rep's calendar.</h2>
+      <p class="lede">Per-seat AI tools charge for every rep, every month, whether they book ten calls or three hundred. We think the risk should sit with us.</p>
+      <p class="quote">Start with the leads your team hasn't had time to call. Every booking there is extra.</p>
+    </div>
+    <ul class="terms" aria-label="Founding clinic terms">
+      <li><span>Setup fee</span><span>none</span></li>
+      <li><span>Seats for reps and admins</span><span>unlimited</span></li>
+      <li><span>You pay for</span><span>booked video calls</span></li>
+      <li><span>Monthly spend</span><span>capped, you choose</span></li>
+      <li><span>Contract</span><span>none during the pilot</span></li>
+      <li><span>Founding clinic places</span><span>5</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Who it's for</span>
+      <h2>Clinics that sell treatment abroad through a video call.</h2>
+      <p class="lede">We start with dental tourism in Albania, where patients from Italy, the UK and Germany choose a clinic after one good conversation.</p>
+    </div>
+    <div class="who">
+      <span class="chip first">Dental implants and full arches</span>
+      <span class="chip">Hair transplant</span>
+      <span class="chip">Cosmetic surgery</span>
+      <span class="chip">Fertility and IVF</span>
+      <span class="chip">Bariatric surgery</span>
+      <span class="chip">Eye surgery</span>
+    </div>
+  </div>
+</section>
+
+<section id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">Questions</span><h2>Before you ask.</h2></div>
+    <div class="faq">
+      <details><summary>Does it replace my sales reps?</summary><p>No. It does the part reps have no time for: the first message, the follow-ups and finding a slot. The video call, the treatment plan and the sale stay with your consultants.</p></details>
+      <details><summary>Which WhatsApp number does it use?</summary><p>A new company number on the official WhatsApp Business Platform, in your own Meta business account. Your reps keep their own numbers. After booking, the patient gets their consultant's number.</p></details>
+      <details><summary>Which languages does it speak?</summary><p>Italian, English, German and Albanian for the pilot. It picks the language from the lead's country and phone number, and follows the lead if they switch.</p></details>
+      <details><summary>What if a patient asks something medical?</summary><p>It doesn't give medical advice or comment on x-rays. It thanks the patient, saves the files for the consultant, and alerts a person.</p></details>
+      <details><summary>Where is patient data stored?</summary><p>On servers in the EU. Photos and x-rays stay in the CRM instead of on staff phones, and are deleted after a period you set.</p></details>
+      <details><summary>How much does it cost after the pilot?</summary><p>A small monthly platform fee plus a fee per booked call, with unlimited users. Founding clinics keep their launch price.</p></details>
+    </div>
+  </div>
+</section>
+
+<section id="join" style="border-top:1px solid var(--line)">
+  <div class="wrap join">
+    <div class="sec-head" style="margin-bottom:0">
+      <span class="eyebrow">Founding clinics</span>
+      <h2>Join the pilot.</h2>
+      <p class="lede">Tell us a little about your team. We'll show you the assistant on your own leads and set up a pilot where you pay only for booked calls.</p>
+    </div>
+    <form class="form" data-waitlist name="waitlist" method="POST" data-netlify="true" netlify-honeypot="company_url">
+      <input type="hidden" name="form-name" value="waitlist">
+      <input class="hp" name="company_url" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="row">
+        <label for="f-name">Your name<input id="f-name" name="name" required autocomplete="name"></label>
+        <label for="f-clinic">Clinic or company<input id="f-clinic" name="clinic" required autocomplete="organization"></label>
+      </div>
+      <div class="row">
+        <label for="f-email">Work email<input id="f-email" type="email" name="email" required autocomplete="email"></label>
+        <label for="f-wa">WhatsApp (optional)<input id="f-wa" type="tel" name="whatsapp" placeholder="+355 ..." autocomplete="tel"></label>
+      </div>
+      <div class="row">
+        <label for="f-reps">Sales reps<select id="f-reps" name="reps"><option>1-3</option><option>4-10</option><option selected>11-25</option><option>25+</option></select></label>
+        <label for="f-leads">New leads per month<select id="f-leads" name="leads"><option>Under 200</option><option selected>200-1,000</option><option>1,000-5,000</option><option>5,000+</option></select></label>
+      </div>
+      <button class="btn btn-primary" type="submit">Request a demo</button>
+      <p class="status" role="status" aria-live="polite"></p>
+      <p class="fine">We'll only use this to contact you about Vizita.</p>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Vizita · Tirana</span>
+    <span>hello@vizita.ai</span>
+  </div>
+</footer>
+
+<script>
+/* Form endpoint for the waitlist.
+   GitHub Pages / Vercel: paste a Formspree URL, e.g. "https://formspree.io/f/abcdwxyz".
+   Netlify: set it to "netlify" to use Netlify Forms. Empty = not connected yet. */
+window.SITE_CONFIG = { formEndpoint: "" };
+
+(function(){
+  // ---------- waitlist forms ----------
+  var isPreview = /claude|claudeusercontent|localhost|127\.0\.0\.1|^$/.test(location.hostname);
+  document.querySelectorAll("form[data-waitlist]").forEach(function(form){
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+      var status = form.querySelector(".status");
+      var btn = form.querySelector("button[type=submit]");
+      var data = new FormData(form);
+      if (data.get("company_url")) return;
+      btn.disabled = true; status.className = status.className.replace(/\b(ok|err)\b/g,"").trim();
+      status.textContent = "Sending...";
+      var ep = window.SITE_CONFIG.formEndpoint;
+      var done = function(){ status.textContent = "Thanks, you're on the list. We'll be in touch within two working days."; status.classList.add("ok"); form.reset(); btn.disabled = false; };
+      var fail = function(){ status.textContent = "That didn't go through. Please try again, or email hello@vizita.ai."; status.classList.add("err"); btn.disabled = false; };
+      if (!ep && !isPreview){ status.textContent = "Sign-ups open in a few days. Please check back soon."; btn.disabled = false; return; }
+      if (isPreview){ setTimeout(function(){ done(); status.textContent += " (Preview: nothing was saved.)"; }, 500); return; }
+      var req = ep === "netlify"
+        ? fetch("/", {method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded"}, body:new URLSearchParams(data).toString()})
+        : fetch(ep, {method:"POST", headers:{"Accept":"application/json"}, body:data});
+      req.then(function(r){ r.ok ? done() : fail(); }).catch(fail);
+    });
+  });
+
+  // ---------- live chat demo ----------
+  var S = {
+    it:{name:"Giulia",sub:"online",note:"New booked call: Giulia R. · Italy · implants · Thu 18:30. Briefing card ready.",msgs:[
+      ["out","Ciao Giulia, sono Elira della clinica a Tirana 😊 La settimana scorsa ci hai chiesto informazioni sugli impianti. Ci stai ancora pensando?","10:02"],
+      ["in","Ciao! Sì, ma ho un po' di dubbi su come funzionano i viaggi","10:05"],
+      ["out","È normalissimo. Di solito si viene due volte: una per gli impianti e poi, dopo 3-6 mesi, per i denti definitivi. Marco, il tuo consulente, ti spiega tutto in una videochiamata gratuita.","10:05"],
+      ["in","Perfetto. Giovedì sera?","10:07"],
+      ["out","Ecco il calendario di Marco, giovedì dalle 18:00 è libero 👇","10:07",["Videochiamata con Marco","Gio 18:30 · 20 min · Google Meet"]],
+      ["booked","✓ Prenotato · giovedì 18:30"],
+      ["out","Fatto! Questo è il numero di Marco, da ora è lui il tuo riferimento.","10:09"]]},
+    en:{name:"Sarah",sub:"online",note:"New booked call: Sarah T. · UK · implants · Thu 17:30. Briefing card ready.",msgs:[
+      ["out","Hi Sarah, it's Elira from the clinic in Tirana 😊 You asked us about implants last week. Are you still looking into it?","10:02"],
+      ["in","Hi! Yes, but I'm not sure how the trips work","10:05"],
+      ["out","Completely normal. Most patients come twice: once for the implants, then 3 to 6 months later for the final teeth. Marco, your consultant, can walk you through it on a free video call.","10:05"],
+      ["in","Sounds good. Thursday evening?","10:07"],
+      ["out","Here's Marco's calendar, Thursday from 17:00 is open 👇","10:07",["Video call with Marco","Thu 17:30 · 20 min · Google Meet"]],
+      ["booked","✓ Booked · Thursday 17:30"],
+      ["out","Done! This is Marco's number, he'll be your contact from now on.","10:09"]]},
+    de:{name:"Petra",sub:"online",note:"New booked call: Petra K. · Germany · implants · Thu 18:30. Briefing card ready.",msgs:[
+      ["out","Hallo Petra, hier ist Elira von der Klinik in Tirana 😊 Sie hatten uns letzte Woche wegen Implantaten angefragt. Ist das noch aktuell?","10:02"],
+      ["in","Hallo! Ja, aber ich bin unsicher, wie das mit den Reisen läuft","10:05"],
+      ["out","Ganz normal. Die meisten kommen zweimal: einmal für die Implantate, dann nach 3 bis 6 Monaten für die endgültigen Zähne. Marco, Ihr Berater, erklärt Ihnen alles in einem kostenlosen Videocall.","10:05"],
+      ["in","Klingt gut. Donnerstagabend?","10:07"],
+      ["out","Hier ist Marcos Kalender, Donnerstag ab 18:00 ist frei 👇","10:07",["Videocall mit Marco","Do 18:30 · 20 Min. · Google Meet"]],
+      ["booked","✓ Gebucht · Donnerstag 18:30"],
+      ["out","Erledigt! Das ist Marcos Nummer, er ist ab jetzt Ihr Ansprechpartner.","10:09"]]},
+    sq:{name:"Arben",sub:"online",note:"New booked call: Arben D. · Albanian diaspora (Italy) · implants · Thu 19:00. Briefing card ready.",msgs:[
+      ["out","Përshëndetje Arben, jam Elira nga klinika në Tiranë 😊 Javën e kaluar na pyete për implantet. A je ende i interesuar?","10:02"],
+      ["in","Përshëndetje! Po, por s'e kam të qartë si funksionojnë udhëtimet","10:05"],
+      ["out","Është normale. Shumica vijnë dy herë: një herë për implantet, pastaj pas 3 deri në 6 muaj për dhëmbët përfundimtarë. Marco, konsulenti yt, të shpjegon gjithçka në një video-thirrje falas.","10:05"],
+      ["in","Mirë. Të enjten në mbrëmje?","10:07"],
+      ["out","Ja kalendari i Marcos, të enjten nga ora 18:00 është i lirë 👇","10:07",["Video-thirrje me Marcon","E enjte 19:00 · 20 min · Google Meet"]],
+      ["booked","✓ U rezervua · e enjte 19:00"],
+      ["out","U bë! Ky është numri i Marcos, nga tani ai do të jetë kontakti yt.","10:09"]]}
+  };
+  var chat = document.getElementById("chat"), note = document.getElementById("rep-note"), noteText = document.getElementById("rep-note-text");
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var timers = [], lang = "it", auto = true;
+  function el(m){
+    if (m[0]==="booked"){ var b=document.createElement("div"); b.className="booked"; b.textContent=m[1]; return b; }
+    var d=document.createElement("div"); d.className="msg "+m[0];
+    var t=document.createElement("span"); t.textContent=m[1]; d.appendChild(t);
+    if (m[3]){ var s=document.createElement("div"); s.className="slot"; s.innerHTML="<strong></strong><span></span>"; s.firstChild.textContent=m[3][0]; s.lastChild.textContent=m[3][1]; d.appendChild(s); }
+    var tm=document.createElement("time"); tm.textContent=m[2]+(m[0]==="out"?" ✓✓":""); d.appendChild(tm); return d;
+  }
+  function clear(){ timers.forEach(clearTimeout); timers=[]; }
+  function later(fn,ms){ timers.push(setTimeout(fn,ms)); }
+  function play(l){
+    clear(); lang=l; var sc=S[l]; chat.innerHTML=""; note.classList.add("dim"); noteText.textContent=sc.note;
+    document.querySelectorAll(".langs button").forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.lang===l ? "true":"false"); });
+    if (reduce){ sc.msgs.forEach(function(m){ chat.appendChild(el(m)); }); note.classList.remove("dim"); return; }
+    var t=300;
+    sc.msgs.forEach(function(m,i){
+      var typing = m[0]==="in" ? 900 : 1100;
+      if (m[0]!=="booked"){
+        later(function(){ var ty=document.createElement("div"); ty.className="typing"; ty.innerHTML="<i></i><i></i><i></i>"; if(m[0]==="out"){ty.style.alignSelf="flex-end";ty.style.background="var(--bubble-out)";} chat.appendChild(ty); chat._ty=ty; }, t);
+        t+=typing;
+      }
+      later(function(){ if(chat._ty){chat._ty.remove();chat._ty=null;} chat.appendChild(el(m)); if(m[0]==="booked") note.classList.remove("dim"); }, t);
+      t+= m[0]==="booked" ? 900 : 700;
+    });
+    if (auto){ later(function(){ var keys=Object.keys(S); play(keys[(keys.indexOf(l)+1)%keys.length]); }, t+4500); }
+  }
+  document.querySelectorAll(".langs button").forEach(function(b){ b.addEventListener("click", function(){ auto=false; play(b.dataset.lang); }); });
+  // Render the finished Italian conversation first so the page is complete at rest, then animate.
+  S.it.msgs.forEach(function(m){ chat.appendChild(el(m)); }); note.classList.remove("dim");
+  if (!reduce) setTimeout(function(){ play("it"); }, 2200);
+})();
+</script>
+</body>
+</html>
